@@ -1,0 +1,35 @@
+bin/
+*.exe~
+*.dll
+*.dylib
+*.iso
+*.exe
+
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+
+# Go workspace file
+go.work
+
+# Environment Variables
+.env
+
+
+#IDE settings
+.vscode/
+.idea/
+*.swp
+*.swb
+
+
+# OS
+.DS_Store
+Thumbs.db
