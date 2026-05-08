@@ -15,7 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load config")
 	}
-	db, err := database.New(cfg.Database)
+	db, err := database.New(&cfg.Database)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load database")
 	}
@@ -24,7 +24,11 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to get database connection")
 	}
-	defer mainDB.Close()
+	defer func() {
+		if err := mainDB.Close(); err != nil {
+			log.Error().Err(err).Msg("Failed to close database connection")
+		}
+	}()
 	gin.SetMode(cfg.Server.GinMode)
 
 	log.Info().Msg("Starting server")
