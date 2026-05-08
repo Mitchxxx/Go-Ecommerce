@@ -1,15 +1,25 @@
 package main
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"github/Mitchxxx/Go-Ecommerce/internal/config"
 	"github/Mitchxxx/Go-Ecommerce/internal/database"
 	"github/Mitchxxx/Go-Ecommerce/internal/logger"
+	"github/Mitchxxx/Go-Ecommerce/internal/server"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 
+	// Setup Logger
 	log := logger.New()
 	cfg, err := config.Load()
 	if err != nil {
@@ -20,6 +30,7 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to load database")
 	}
 
+	// Connect to Database
 	mainDB, err := db.DB()
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to get database connection")
@@ -31,5 +42,38 @@ func main() {
 	}()
 	gin.SetMode(cfg.Server.GinMode)
 
-	log.Info().Msg("Starting server")
+	// Launch Server
+	srv := server.New(cfg, db, log)
+	router := srv.SetupRoutes()
+	/// Http Server instance
+	httpServer := &http.Server{
+		Addr:         fmt.Sprintf(":%s", cfg.Server.Port),
+		Handler:      router,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	// Goroutine to start the server
+
+	go func() {
+		log.Info().Str("port", cfg.Server.Port).Msg("starting http server")
+		if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal().Err(err).Msg("failed to start hrrp server")
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Info().Msg("shutting down server")
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+
+	defer cancel()
+
+	if err := httpServer.Shutdown(ctx); err != nil {
+		log.Fatal().Err(err).Msg("failed to shutdown http server")
+	}
+
+	log.Info().Msg("shutting down database")
 }
