@@ -32,3 +32,8 @@ go.work
 # OS
 .DS_Store
 Thumbs.db
+
+
+# AI Agents
+
+.claude
