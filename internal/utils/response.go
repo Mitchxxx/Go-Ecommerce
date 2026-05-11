@@ -52,20 +52,20 @@ func ErrorResponse(c *gin.Context, statusCode int, message string, err error) {
 	c.JSON(statusCode, response)
 }
 
-func BadResponse(c *gin.Context, message string, err error) {
+func BadRequestResponse(c *gin.Context, message string, err error) {
 	ErrorResponse(c, http.StatusBadRequest, message, err)
 }
 
-func UnauthorizedResponse(c *gin.Context, message string, err error) {
-	ErrorResponse(c, http.StatusUnauthorized, message, err)
+func UnauthorizedResponse(c *gin.Context, message string) {
+	ErrorResponse(c, http.StatusUnauthorized, message, nil)
 }
 
-func ForbiddenResponse(c *gin.Context, message string, err error) {
-	ErrorResponse(c, http.StatusForbidden, message, err)
+func ForbiddenResponse(c *gin.Context, message string) {
+	ErrorResponse(c, http.StatusForbidden, message, nil)
 }
 
-func NotFound(c *gin.Context, message string, err error) {
-	ErrorResponse(c, http.StatusNotFound, message, err)
+func NotFound(c *gin.Context, message string) {
+	ErrorResponse(c, http.StatusNotFound, message, nil)
 }
 
 func InterServerErrorResponse(c *gin.Context, message string, err error) {

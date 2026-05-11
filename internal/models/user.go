@@ -29,7 +29,7 @@ type UserRole string
 
 const (
 	UserRoleCustomer UserRole = "customer"
-	UserAdmin        UserRole = "admin"
+	UserRoleAdmin    UserRole = "admin"
 )
 
 type RefreshToken struct {
