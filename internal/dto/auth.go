@@ -29,6 +29,7 @@ type UserResponse struct {
 	Password  string `json:"password"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
+	Role      string `json:"role"`
 	Phone     string `json:"phone"`
 	IsActive  bool   `json:"is_active"`
 }
