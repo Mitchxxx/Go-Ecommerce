@@ -1,4 +1,4 @@
-.PHONY: help build run dev lint migrate-up migrate-down docker-up docker-down
+.PHONY: help build run dev lint migrate-up migrate-down migrate-force docker-up docker-down
 
 help:
 	@echo "Available commands"
@@ -9,6 +9,7 @@ help:
 	@echo " make format 			- Format the code and re-arrange the imports"
 	@echo " make migrate-up			- Apply database migrations"
 	@echo " make migrate-down		- Rollback database migrations"
+	@echo " make migrate-force		- Resets migration state to before any migration"
 	@echo " make docker-up			- Run docker-compose to setup database & local cloud"
 	@echo " make docker-down		- Close docker-compose"
 
@@ -32,6 +33,9 @@ migrate-up:
 
 migrate-down:
 	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce_shop?sslmode=disable" down
+
+migrate-force:
+	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce_shop?sslmode=disable" force 1
 
 docker-up:
 	docker compose -f docker/docker-compose.yml up -d
