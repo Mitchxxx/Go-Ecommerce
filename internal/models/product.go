@@ -49,5 +49,5 @@ type ProductImage struct {
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
 
 	// Relationships
-	Products Product `json:"-"`
+	Product Product `json:"-"`
 }

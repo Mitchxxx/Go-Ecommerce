@@ -27,8 +27,8 @@ func NewAuthService(db *gorm.DB, cfg *config.Config) *AuthService {
 func (s *AuthService) Register(req *dto.RegisterRequest) (*dto.AuthResponse, error) {
 	// Check if the user exists
 	var existingUser models.User
-	if err := s.db.Where("email = ?", req.Email).First(&existingUser).Error; err != nil {
-		return nil, errors.New("user not found")
+	if err := s.db.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
+		return nil, errors.New("you cannot register with this email")
 	}
 
 	// Hash password
@@ -128,6 +128,8 @@ func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse
 			Phone:     user.Phone,
 			Role:      string(user.Role),
 			IsActive:  user.IsActive,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
