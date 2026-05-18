@@ -16,20 +16,18 @@ type UpdateCategoryRequest struct {
 }
 
 type CategoryResponse struct {
-	ID          uint      `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	IsActive    bool      `json:"is_active"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	IsActive    bool   `json:"is_active"`
 }
 
 type CreateProductRequest struct {
 	CategoryID  uint    `json:"category_id" binding:"required"`
 	Name        string  `json:"name" binding:"required"`
 	Description string  `json:"description"`
-	Price       float64 `json:"price" binding:"required, gt=0"`
-	Stock       int     `json:"stock" binding:"required, min=0"`
+	Price       float64 `json:"price" binding:"required,gt=0"`
+	Stock       int     `json:"stock" binding:"required,min=0"`
 	SKU         string  `json:"sku"`
 }
 

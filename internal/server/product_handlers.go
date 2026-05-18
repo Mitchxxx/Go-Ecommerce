@@ -64,7 +64,7 @@ func (s *Server) deleteCategory(c *gin.Context) {
 		return
 	}
 	productService := services.NewProductService(s.db)
-	if err := productService.DeleteProduct(uint(id)); err != nil {
+	if err := productService.DeleteCategory(uint(id)); err != nil {
 		utils.InterServerErrorResponse(c, "Failed to delete category", err)
 	}
 	utils.SuccessResponse(c, "Category deleted successfully", nil)
