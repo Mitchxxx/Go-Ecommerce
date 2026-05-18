@@ -68,8 +68,8 @@ func (s *Server) SetupRoutes() *gin.Engine {
 			{
 				productRoutes := products
 				productRoutes.POST("/", s.adminMiddleware(), s.createProduct)
-				productRoutes.PUT("/", s.adminMiddleware(), s.updateProduct)
-				productRoutes.DELETE("/", s.adminMiddleware(), s.deleteProduct)
+				productRoutes.PUT("/:id", s.adminMiddleware(), s.updateProduct)
+				productRoutes.DELETE("/:id", s.adminMiddleware(), s.deleteProduct)
 			}
 		}
 
