@@ -24,6 +24,15 @@ type CategoryResponse struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+type CreateProductRequest struct {
+	CategoryID  uint    `json:"category_id" binding:"required"`
+	Name        string  `json:"name" binding:"required"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price" binding:"required, gt=0"`
+	Stock       int     `json:"stock" binding:"required, min=0"`
+	SKU         string  `json:"sku"`
+}
+
 type CreateProductResponse struct {
 	CategoryID  uint    `json:"category_id" binding:"required"`
 	Name        string  `json:"name" binding:"required"`

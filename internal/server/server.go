@@ -1,6 +1,5 @@
 package server
 
-import "C"
 import (
 	"github/Mitchxxx/Go-Ecommerce/internal/config"
 	"net/http"
