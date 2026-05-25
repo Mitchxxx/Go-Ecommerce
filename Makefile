@@ -4,6 +4,7 @@ help:
 	@echo "Available commands"
 	@echo " make build				- Build the application"
 	@echo " make run 				- Run the application"
+	@echo " make stop 				- Stop the application"
 	@echo " make dev 				- Run the application in development mode"
 	@echo " make lint 				- Run linter on the codebase"
 	@echo " make format 			- Format the code and re-arrange the imports"
@@ -18,6 +19,9 @@ build:
 
 run:
 	go run ./cmd/api
+
+stop:
+	pkill -f "./tmp/main"
 
 dev:
 	go run ./cmd/api

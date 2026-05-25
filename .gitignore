@@ -33,6 +33,8 @@ go.work
 .DS_Store
 Thumbs.db
 
+# Uploads
+uploads/
 
 # AI Agents
 
