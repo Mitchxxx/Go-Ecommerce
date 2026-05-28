@@ -13,15 +13,24 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  cdn:
+    image: nginx:alpine
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ../uploads:/var/www/uploads
+    depends_on:
+      - localstack
+
   localstack:
     image: localstack/localstack:3.8
     container_name: localstack_container
     environment:
       - SERVICES=s3,sqs
-      - DEFAULT_REGION=eu-west-1
       - AWS_ACCESS_KEY_ID=localstack
       - AWS_SECRET_ACCESS_KEY=localstack
-      - DATA_DIR=/tmp/localstack/data
+      - PERSISTENCE=1
     ports:
       - "4566:4566"
     volumes:
