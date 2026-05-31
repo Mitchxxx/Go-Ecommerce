@@ -58,7 +58,12 @@ func (p *S3Provider) UploadFile(file *multipart.FileHeader, path string) (string
 		return "", err
 	}
 
-	defer src.Close()
+	defer func(src multipart.File) {
+		err := src.Close()
+		if err != nil {
+			log.Printf("error closing file from source %v", err)
+		}
+	}(src)
 
 	result, err := p.transferManager.UploadObject(
 		context.TODO(),

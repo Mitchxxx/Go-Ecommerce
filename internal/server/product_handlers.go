@@ -173,5 +173,5 @@ func (s *Server) uploadProductImage(c *gin.Context) {
 		utils.InterServerErrorResponse(c, "Failed to save image record", err)
 	}
 
-	utils.SuccessResponse(c, "Image uploaded sucessfully", map[string]string{"url": url})
+	utils.SuccessResponse(c, "Image uploaded successfully", map[string]string{"url": url})
 }

@@ -5,6 +5,8 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
+
+	"github.com/rs/zerolog/log"
 )
 
 type LocalUploadProvider struct {
@@ -18,7 +20,7 @@ func NewLocalUploadProvider(basePath string) *LocalUploadProvider {
 func (p *LocalUploadProvider) UploadFile(file *multipart.FileHeader, path string) (string, error) {
 
 	fullPath := filepath.Join(p.basePath, path)
-	if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(fullPath), 0o755); err != nil {
 		return "", err
 	}
 
@@ -27,14 +29,24 @@ func (p *LocalUploadProvider) UploadFile(file *multipart.FileHeader, path string
 	if err != nil {
 		return "", err
 	}
-	defer src.Close()
+	defer func(src multipart.File) {
+		err := src.Close()
+		if err != nil {
+			log.Printf("error closing file from source: %v", err)
+		}
+	}(src)
 
 	// Create destination file
 	dst, err := os.Create(fullPath)
 	if err != nil {
 		return "", err
 	}
-	defer dst.Close()
+	defer func(dst *os.File) {
+		err := dst.Close()
+		if err != nil {
+			log.Printf("error closing file from destination: %v", err)
+		}
+	}(dst)
 
 	// Read from source file to Destination file
 	if _, err := dst.ReadFrom(src); err != nil {
