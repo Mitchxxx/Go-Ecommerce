@@ -19,9 +19,9 @@ func NewCartService(db *gorm.DB) *CartService {
 func (s *CartService) GetCart(userID uint) (*dto.CartResponse, error) {
 	var cart models.Cart
 	err := s.db.Preload("CartItems.Product.Category").
-		Where("user_id = ?", userID).First(&cart)
+		Where("user_id = ?", userID).First(&cart).Error
 	if err != nil {
-		return nil, err.Error
+		return nil, err
 	}
 
 	return s.convertToCartResponse(&cart), nil
@@ -98,8 +98,9 @@ func (s *CartService) UpdateCartItem(userID, itemID uint, req *dto.UpdateCartIte
 }
 
 func (s *CartService) RemoveFromCart(userID, itemID uint) error {
-	return s.db.Joins("JOIN carts ON cart_items.cart_id = carts.id").
-		Where("cart_items.id = ? AND carts.user_id = ?", itemID, userID).
+	return s.db.Where("id = ? AND cart_id IN (?)", itemID,
+		s.db.Select("id").Table("carts").
+			Where("user_id = ?", userID)).
 		Delete(&models.CartItem{}).Error
 }
 
@@ -109,7 +110,7 @@ func (s *CartService) convertToCartResponse(cart *models.Cart) *dto.CartResponse
 	var total float64
 
 	for i := range cart.CartItems {
-		subtotal := float64(cart.CartItems[i].Quantity)
+		subtotal := float64(cart.CartItems[i].Quantity) * cart.CartItems[i].Product.Price
 		total += subtotal
 
 		cartItems[i] = dto.CartItemResponse{
@@ -120,7 +121,7 @@ func (s *CartService) convertToCartResponse(cart *models.Cart) *dto.CartResponse
 				Name:        cart.CartItems[i].Product.Name,
 				Description: cart.CartItems[i].Product.Description,
 				Price:       cart.CartItems[i].Product.Price,
-				Stock:       cart.CartItems[i].Product.Stock,
+				Stock:       cart.CartItems[i].Product.Stock - cart.CartItems[i].Quantity,
 				SKU:         cart.CartItems[i].Product.SKU,
 				IsActive:    cart.CartItems[i].Product.IsActive,
 				Category: dto.CategoryResponse{
@@ -140,5 +141,8 @@ func (s *CartService) convertToCartResponse(cart *models.Cart) *dto.CartResponse
 		UserID:    cart.UserID,
 		CartItems: cartItems,
 		Total:     total,
+		CreatedAt: cart.CreatedAt,
+		UpdatedAt: cart.UpdatedAt,
 	}
+
 }

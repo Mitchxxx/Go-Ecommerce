@@ -98,7 +98,7 @@ func (s *Server) SetupRoutes() *gin.Engine {
 				cartRoutes.GET("/", s.getCart)
 				cartRoutes.POST("/items", s.addToCart)
 				cartRoutes.PUT("/items/:id", s.updateCartItem)
-				cartRoutes.DELETE("/items:id", s.removeFromCart)
+				cartRoutes.DELETE("/items/:id", s.removeFromCart)
 			}
 		}
 

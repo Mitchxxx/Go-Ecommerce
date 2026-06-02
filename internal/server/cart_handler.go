@@ -44,6 +44,7 @@ func (s *Server) updateCartItem(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		utils.BadRequestResponse(c, "Invalid cart item ID", err)
+		return
 	}
 
 	var req dto.UpdateCartItemRequest
@@ -55,6 +56,7 @@ func (s *Server) updateCartItem(c *gin.Context) {
 	cart, err := s.cartService.UpdateCartItem(userID, uint(id), &req)
 	if err != nil {
 		utils.BadRequestResponse(c, "Failed to update cart item", err)
+		return
 	}
 
 	utils.SuccessResponse(c, "Cart item updated successfully", cart)
