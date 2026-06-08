@@ -1,4 +1,4 @@
-.PHONY: help build run dev lint migrate-up migrate-down migrate-force docker-up docker-down
+.PHONY: help build run dev lint format migrate-up migrate-down migrate-force docker-up docker-down
 
 help:
 	@echo "Available commands"
@@ -31,7 +31,6 @@ lint:
 
 format:
 	@gofmt -s -w .
-	@goimports -w .
 migrate-up:
 	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce_shop?sslmode=disable" up
 
