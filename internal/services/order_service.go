@@ -72,7 +72,7 @@ func (s *OrderService) CreateOrder(userID uint) (*dto.OrderResponse, error) {
 		}
 
 		// clear cart
-		if err := tx.Where("cart_id = ?", cart.ID).Delete(&models.CartItem{}).Error; err != nil {
+		if err := tx.Unscoped().Where("cart_id = ?", cart.ID).Delete(&models.CartItem{}).Error; err != nil {
 			return err
 		}
 
@@ -161,7 +161,7 @@ func (s *OrderService) convertToOrderResponse(order *models.Order) dto.OrderResp
 	for i := range order.OrderItems {
 		item := order.OrderItems[i]
 
-		orderItems = append(orderItems, dto.OrderItemResponse{
+		orderItems[i] = dto.OrderItemResponse{
 			ID: item.ID,
 			Product: dto.ProductResponse{
 				ID:          item.Product.ID,
@@ -182,7 +182,7 @@ func (s *OrderService) convertToOrderResponse(order *models.Order) dto.OrderResp
 			Quantity:  item.Quantity,
 			Price:     item.Price,
 			CreatedAt: item.CreatedAt,
-		})
+		}
 	}
 
 	return dto.OrderResponse{
