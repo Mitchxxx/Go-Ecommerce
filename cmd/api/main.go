@@ -20,6 +20,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @title E-Commerce API
+// @version 2.0
+// @description A modern e-commerce API built with GO, Gin and GORM
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Mitchel Egboko
+// @contact.url http://linkedin.com/in/megboko
+// @contact.email megboko@ymail.com
+
+// @license.name Apache 2.0
+// @license.url http://ww.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
+// @BasePath /api/v1
+// @schemas http https
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 func main() {
 
 	// Setup Logger
