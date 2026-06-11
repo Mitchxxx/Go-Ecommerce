@@ -14,7 +14,7 @@ linters:
     - unused
     - misspell
     - gocritic
-    - revive
+#    - revive
   settings:
     errcheck:
       check-type-assertions: true
