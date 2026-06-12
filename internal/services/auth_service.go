@@ -7,6 +7,7 @@ import (
 	"github/Mitchxxx/Go-Ecommerce/internal/dto"
 	"github/Mitchxxx/Go-Ecommerce/internal/events"
 	"github/Mitchxxx/Go-Ecommerce/internal/models"
+	"github/Mitchxxx/Go-Ecommerce/internal/notifications"
 	"github/Mitchxxx/Go-Ecommerce/internal/utils"
 	"time"
 
@@ -122,7 +123,7 @@ func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse
 
 	s.db.Create(&refreshTokenModel)
 
-	err = s.eventPublisher.Publish("USER_LOGGED_IN", user, map[string]string{})
+	err = s.eventPublisher.Publish(notifications.UserLoggedIn, user, map[string]string{})
 	if err != nil {
 		return nil, fmt.Errorf("unable to publish user login event: %w", err)
 	}

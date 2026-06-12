@@ -24,6 +24,10 @@ type EmailNotifier struct {
 	config *SMTPConfig
 }
 
+const (
+	UserLoggedIn = "USER_LOGGED_IN"
+)
+
 func NewEmailNotifier(config *SMTPConfig) *EmailNotifier {
 	return &EmailNotifier{
 		config: config,
