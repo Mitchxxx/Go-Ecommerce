@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github/Mitchxxx/Go-Ecommerce/internal/config"
 	"github/Mitchxxx/Go-Ecommerce/internal/dto"
+	"github/Mitchxxx/Go-Ecommerce/internal/events"
 	"github/Mitchxxx/Go-Ecommerce/internal/models"
 	"github/Mitchxxx/Go-Ecommerce/internal/utils"
 	"time"
@@ -13,14 +14,16 @@ import (
 )
 
 type AuthService struct {
-	db     *gorm.DB
-	config *config.Config
+	db             *gorm.DB
+	config         *config.Config
+	eventPublisher events.Publisher
 }
 
-func NewAuthService(db *gorm.DB, cfg *config.Config) *AuthService {
+func NewAuthService(db *gorm.DB, cfg *config.Config, eventPublisher events.Publisher) *AuthService {
 	return &AuthService{
-		db:     db,
-		config: cfg,
+		db:             db,
+		config:         cfg,
+		eventPublisher: eventPublisher,
 	}
 }
 
@@ -118,6 +121,11 @@ func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse
 	}
 
 	s.db.Create(&refreshTokenModel)
+
+	err = s.eventPublisher.Publish("USER_LOGGED_IN", user, map[string]string{})
+	if err != nil {
+		return nil, fmt.Errorf("unable to publish user login event: %w", err)
+	}
 
 	return &dto.AuthResponse{
 		User: dto.UserResponse{

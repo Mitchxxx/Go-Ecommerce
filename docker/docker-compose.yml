@@ -30,7 +30,9 @@ services:
       - SERVICES=s3,sqs
       - AWS_ACCESS_KEY_ID=localstack
       - AWS_SECRET_ACCESS_KEY=localstack
+      - AWS_DEFAULT_REGION=eu-west-1
       - PERSISTENCE=1
+      - SQS_ENDPOINT_STRATEGY=path
     ports:
       - "4566:4566"
     volumes:

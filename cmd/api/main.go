@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github/Mitchxxx/Go-Ecommerce/internal/config"
 	"github/Mitchxxx/Go-Ecommerce/internal/database"
+	"github/Mitchxxx/Go-Ecommerce/internal/events"
 	"github/Mitchxxx/Go-Ecommerce/internal/interfaces"
 	"github/Mitchxxx/Go-Ecommerce/internal/logger"
 	"github/Mitchxxx/Go-Ecommerce/internal/providers"
@@ -63,9 +64,17 @@ func main() {
 			log.Error().Err(err).Msg("Failed to close database connection")
 		}
 	}()
+
+	ctx := context.Background()
+
+	eventPublisher, err := events.NewEventPublisher(ctx, &cfg.AWS)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to create even publisher")
+		return
+	}
 	gin.SetMode(cfg.Server.GinMode)
 
-	authService := services.NewAuthService(db, cfg)
+	authService := services.NewAuthService(db, cfg, eventPublisher)
 	productService := services.NewProductService(db)
 	userService := services.NewUserService(db)
 	cartService := services.NewCartService(db)
