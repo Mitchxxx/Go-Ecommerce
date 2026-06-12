@@ -14,6 +14,7 @@ type Config struct {
 	JWT      JWTConfig
 	AWS      AWSConfig
 	Upload   UploadConfig
+	SMTP     SMTPConfig
 }
 
 type ServeConfig struct {
@@ -42,7 +43,15 @@ type AWSConfig struct {
 	SecretAccessKey string
 	S3Bucket        string
 	S3Endpoint      string
-	EventQueueName string
+	EventQueueName  string
+}
+
+type SMTPConfig struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+	From     string
 }
 
 type UploadConfig struct {
@@ -59,6 +68,7 @@ func Load() (*Config, error) {
 	jwtExpiresIn, _ := time.ParseDuration(getEnv("JWT_EXPIRES_IN", "1h"))
 	refreshTokenExpires, _ := time.ParseDuration(getEnv("REFRESH_TOKEN_EXPIRES", "72h"))
 	maxUploadSize, _ := strconv.ParseInt(getEnv("MAX_UPLOAD_SIZE", "10485760"), 10, 64)
+	smtpPort, _ := strconv.Atoi(getEnv("SMTP_PORT", "1025"))
 
 	return &Config{
 		Server: ServeConfig{
@@ -85,6 +95,13 @@ func Load() (*Config, error) {
 			S3Bucket:        getEnv("AWS_S3_BUCKET", "ecommerce-uploads"),
 			S3Endpoint:      getEnv("AWS_S3_ENDPOINT", "http://localhost:4566"),
 			EventQueueName:  getEnv("AWS_EVENT_QUEUE_NAME", "ecommerce-events"),
+		},
+		SMTP: SMTPConfig{
+			Host:     getEnv("SMTP_HOST", "localhost"),
+			Port:     smtpPort,
+			Username: getEnv("SMTP_USERNAME", ""),
+			Password: getEnv("SMTP_PAssword", ""),
+			From:     getEnv("SMTP_FROM", "noreply@shop.com"),
 		},
 		Upload: UploadConfig{
 			Path:           getEnv("UPLOAD_PATH", ""),
