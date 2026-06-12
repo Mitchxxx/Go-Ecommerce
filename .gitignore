@@ -39,3 +39,6 @@ uploads/
 # AI Agents
 
 .claude
+
+# Air
+.air.toml
